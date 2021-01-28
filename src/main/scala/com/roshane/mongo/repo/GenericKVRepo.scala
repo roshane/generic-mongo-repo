@@ -1,6 +1,6 @@
 package com.roshane.mongo.repo
 
-import org.mongodb.scala.bson.annotations.BsonProperty
+import com.roshane.mongo.entity.Entities.{Key, MongoEntry, Value}
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.Updates._
 import org.mongodb.scala.result.{DeleteResult, InsertOneResult}
@@ -8,11 +8,9 @@ import org.mongodb.scala.{MongoCollection, MongoDatabase}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-abstract class GenericKVRepo[K, V](keyFieldName: String = "key", valueFiledName: String = "value")
-                                  (implicit ec: ExecutionContext) {
-
-  case class MongoEntry(@BsonProperty(keyFieldName) key: K,
-                        @BsonProperty(valueFiledName) value: V)
+abstract class GenericKVRepo[K <: Key, V <: Value](keyFieldName: String = "key",
+                                                   valueFiledName: String = "value")
+                                                  (implicit ec: ExecutionContext) {
 
   protected def db: MongoDatabase
 
@@ -27,11 +25,11 @@ abstract class GenericKVRepo[K, V](keyFieldName: String = "key", valueFiledName:
     collection.deleteOne(equal(keyFieldName, key)).toFuture()
 
   def find(key: K): Future[Option[V]] =
-    collection.find(equal(keyFieldName, key)).map(_.value).toFuture().map(_.headOption)
+    collection.find(equal(keyFieldName, key)).first().map(_.value).toFuture().map(_.headOption)
 
   def findAll(): Future[Seq[V]] =
     collection.find().map(_.value).toFuture()
 
-  def update(key: K, value: V): Future[Option[V]] =
+  def update(key: K, value: V): Future[Option[Value]] =
     collection.findOneAndUpdate(equal(keyFieldName, key), set(valueFiledName, value)).map(_.value).toFuture().map(_.headOption)
 }

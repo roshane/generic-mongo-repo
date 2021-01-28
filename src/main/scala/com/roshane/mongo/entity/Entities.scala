@@ -6,6 +6,8 @@ object Entities {
 
   sealed class Value
 
+  case class MongoEntry(key: Key, value: Value)
+
   case class AddressKey(id: String, postalCode: String) extends Key
 
   case class CustomerKey(id: String, email: String) extends Key
