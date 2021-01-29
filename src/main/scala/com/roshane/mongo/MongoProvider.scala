@@ -3,7 +3,7 @@ package com.roshane.mongo
 import com.mongodb.{ConnectionString, MongoClientSettings}
 import org.mongodb.scala.MongoClient
 
-trait MongoProvider extends AppCodecProvider {
+trait MongoProvider extends BaseCodecProvider with AutoCloseable {
 
   private val host: String = "localhost"
   protected val dbName: String = "crm"
@@ -14,9 +14,10 @@ trait MongoProvider extends AppCodecProvider {
   protected val mongoClient: MongoClient = MongoClient(
     MongoClientSettings.builder()
       .applicationName("generic-mongo-repo")
-      .codecRegistry(codecRegistry)
+      .codecRegistry(baseCodecRegistry)
       .applyConnectionString(new ConnectionString(s"mongodb://$host:27017"))
       .build()
   )
 
+  override def close(): Unit = mongoClient.close()
 }

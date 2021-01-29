@@ -1,9 +1,9 @@
-package com.roshane.mongo
+package com.roshane.mongo.util
+
+import scala.util.Random
 
 import com.github.javafaker.Faker
 import com.roshane.mongo.entity.Entities._
-
-import scala.util.Random
 
 object FakeUtil {
 

@@ -2,11 +2,9 @@ package com.roshane.mongo.entity
 
 object Entities {
 
-  sealed class Key
+  sealed trait Key
 
-  sealed class Value
-
-  case class MongoEntry(key: Key, value: Value)
+  sealed trait Value
 
   case class AddressKey(id: String, postalCode: String) extends Key
 
