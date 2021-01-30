@@ -20,8 +20,8 @@ object Application extends App with MongoProvider {
   private val fakeCustomers: Seq[(Entities.CustomerKey, Entities.Customer)] = FakeUtil.fakeCustomers(100000)
 
   val customerEntities = fakeCustomers.map(kv => kv._1 -> kv._2).toMap
-  metered(customerRepo.upsertAll(customerEntities))
-
+//  metered(customerRepo.upsertAll(customerEntities))
+  metered(customerRepo.insertAll(customerEntities))
   executorService.shutdown()
 
   def metered(func: => Future[Unit]): Unit = {

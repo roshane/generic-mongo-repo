@@ -10,7 +10,7 @@ import com.typesafe.scalalogging.LazyLogging
 import org.bson.{BsonDocumentReader, BsonDocumentWriter}
 import org.bson.codecs.{Codec, DecoderContext, EncoderContext}
 import org.mongodb.scala.{MongoCollection, MongoDatabase}
-import org.mongodb.scala.bson.BsonDocument
+import org.mongodb.scala.bson.{BsonDocument, BsonString}
 import org.mongodb.scala.model.Indexes
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.Updates._
@@ -92,6 +92,13 @@ abstract class GenericKVRepo[K <: Key, V <: Value](implicit ec: ExecutionContext
     collection.find().map(bsonToMongoEntry).map(_.key).toFuture()
   }
 
+  def insertAll(values: Map[K, V]): Future[Unit] = {
+    logger.debug("Bulk Insert to MongoDB {}", collectionName)
+    val bsonValues = values.map {
+      case (k, v) => BsonDocument(Seq((KeyFieldName, keyToBson(k)), (ValueFiledName, valueToBson(v))))
+    }.toList
+    collection.insertMany(bsonValues).toFuture().map(_ => ())
+  }
 
   private def keyToBson(entity: K)(implicit codec: Codec[K]): BsonDocument = {
     val doc = BsonDocument()
