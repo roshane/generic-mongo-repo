@@ -1,0 +1,15 @@
+{
+  "_id" : ObjectId("6014ca54f892f62aa75647d2"),
+  "customerKey" : {
+    "_t" : "CustomerKey",
+    "id" : "9251124",
+    "email" : "winifred.zemlak@hotmail.com"
+  },
+  "customer" : {
+    "_t" : "Customer",
+    "id" : "9251124",
+    "name" : "Oliver",
+    "age" : 33,
+    "email" : "winifred.zemlak@hotmail.com"
+  }
+}

@@ -10,12 +10,9 @@ import org.mongodb.scala.bson.annotations.BsonProperty
 class CustomerRepo(client: MongoClient, dbName: String)(implicit ec: ExecutionContext)
   extends GenericKVRepo[CustomerKey, Customer] {
 
-  protected class CustomerEntry(@BsonProperty("customerKey") key: CustomerKey,
-                                @BsonProperty("customer") value: Customer)
+  override protected def KeyFieldName: String = "customerKey"
 
-  override protected def keyFieldName: String = "customerKey"
-
-  override protected def valueFiledName: String = "customer"
+  override protected def ValueFiledName: String = "customer"
 
   override protected def db: MongoDatabase = client.getDatabase(dbName)
 
